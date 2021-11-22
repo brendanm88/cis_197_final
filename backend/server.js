@@ -35,7 +35,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.get('/', (req, res) => {
-  res.send(req.user)
+  res.send('hello')
 //   if (req.user) {
 //     res.send(`Hello world ${req.user}`)
 //   } else {

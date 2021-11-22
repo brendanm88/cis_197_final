@@ -9,8 +9,8 @@ const auth = () => {
     done(null, user)
   })
   passport.use(new TwitterStrategy({
-    consumerKey: 'AChzVNE3NlCR3NU2fNVNtrZC1',
-    consumerSecret: 'uiOwJd8wRZGBfgVu3M6X8kHqnj8UuYxaPI6tASVCeN4vBw0RBu',
+    consumerKey: '',
+    consumerSecret: '',
     callbackURL: 'http://localhost:3000/auth/twitter/callback',
   },
   ((accessToken, refreshToken, profile, done) => done(null, profile))))
