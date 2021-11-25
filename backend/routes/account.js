@@ -38,13 +38,52 @@ router.post('/describe', isAuthenticated, async (req, res, next) => {
 })
 
 // get all posts of current user
-router.get('/posts', async (req, res) => {
+router.post('/posts', async (req, res) => {
   const { username } = req.body
   try {
     const posts = await Post.find({ author: username })
     res.json(posts)
   } catch (err) {
     res.send('getting posts of user has problems')
+  }
+})
+
+// get all friends of current user
+router.post('/friends', async (req, res) => {
+  const { username } = req.body
+  try {
+    const user = await User.findOne({ username })
+    const group = user.friends
+    res.send(group)
+  } catch (err) {
+    res.send('getting friends has problems')
+  }
+})
+
+// get all users of certain type or just all
+router.get('/users', async (req, res) => {
+  const { type } = req.query
+  try {
+    if (!req.query.type) {
+      const users = await User.find({})
+      res.json(users)
+    } else {
+      const users = await User.find({ type })
+      res.json(users)
+    }
+  } catch (err) {
+    res.send('getting users has problems')
+  }
+})
+
+// get user given username
+router.post('/user', async (req, res) => {
+  const { username } = req.body
+  try {
+    const user = await User.findOne({ username })
+    res.send(user)
+  } catch (err) {
+    res.send('getting user has problems')
   }
 })
 
@@ -84,7 +123,7 @@ router.post('/type', isAuthenticated, async (req, res, next) => {
   const { username } = req.session
   try {
     await User.updateOne({ username }, { type })
-    res.send('user type updated')
+    res.send('user type success')
   } catch (err) {
     next(err)
   }
@@ -94,7 +133,6 @@ router.post('/type', isAuthenticated, async (req, res, next) => {
 router.post('/friend', isAuthenticated, async (req, res, next) => {
   const { friendUser } = req.body
   const { username } = req.session
-
   try {
     const friend = await User.findOne({ username: friendUser })
     if (!friend) {

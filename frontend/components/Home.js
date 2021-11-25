@@ -6,40 +6,57 @@ import axios from 'axios'
 import {
   Title,
   loginLinkStyle,
-  QButton,
+  SubTitle,
+  CButton,
   LogoutButton,
-  MButton,
+  BackButton,
   modalStyle,
+  ProfileLink,
 } from '../styles/StyleComps'
 
-import Modal from './Modal'
-import Question from './Question'
+import Post from './Post'
+// import Profile from '../components/Profile'
 
 const Home = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [modal, setModal] = useState(false)
-  const [questions, setQuestions] = useState([])
-  const [shownID, setShownID] = useState('')
+  const [posts, setPosts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [cat, setCat] = useState('')
+  const [friends, setFriends] = useState('')
 
-  const showModal = () => {
-    setModal(!modal)
-  }
-
-  // update questions on internval
+  // update posts on interval
   useEffect(() => {
     const intervalID = setInterval(async () => {
-      const { data } = await axios.get('/api/questions') // GET request
-      setQuestions(data)
+      const { data } = await axios.get('/api/posts') // GET request
+      setPosts(data)
     }, 2000)
     return () => clearInterval(intervalID)
   }, [])
+
+  // update categories on interval
+  useEffect(() => {
+    const intervalID = setInterval(async () => {
+      const { data } = await axios.get('/api/postTypes') // GET request
+      setCategories(data)
+    }, 2000)
+    return () => clearInterval(intervalID)
+  }, [])
+
+  // update friends on interval
+  useEffect(() => {
+    const intervalID = setInterval(async () => {
+      const { data } = await axios.post('/account/friends', { username }) // GET request
+      setFriends(data)
+    }, 2000)
+    return () => clearInterval(intervalID)
+  }, [username])
 
   // check if user logged in
   useEffect(async () => {
     try {
       const { data } = await axios.post('/account/isLoggedIn', { username, password })
-      if (data !== 'Error: user not authenticated') {
+      if (data !== 'Error: user is not authenticated') {
         setUsername(data)
       } else {
         setUsername('')
@@ -62,14 +79,222 @@ const Home = () => {
     }
   }
 
-  // if someone logged in
   if (username !== '') {
+    if (cat === 'All') {
+      return (
+        <div>
+          <Title>Social Media Site</Title>
+          <ProfileLink href="/profile">View Profile</ProfileLink>
+          <LogoutButton type="submit" onClick={logoutUser}>
+            Logout
+          </LogoutButton>
+          <h2 style={{
+            float: 'left',
+            margin: '1em',
+            position: 'absolute',
+            top: '140px',
+            fontSize: '1.5em',
+            color: '#474747',
+            wordWrap: 'break-line',
+          }}
+          >
+          &nbsp;&nbsp;Hello&nbsp;
+            {username}
+            !
+            <br />
+            Go to your profile to add a post!
+          </h2>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <BackButton
+            type="submit"
+            onClick={() => {
+              setCat('')
+            }}
+          >
+            Back
+          </BackButton>
+          <SubTitle>
+            {cat}
+            &nbsp;Posts
+          </SubTitle>
+          <>
+            {posts.map(p => (
+              <div key={p._id}>
+                <Post post={p} add />
+              </div>
+            ))}
+          </>
+        </div>
+      )
+    } if (cat === 'Friends') {
+      return (
+        <div>
+          <Title>Social Media Site</Title>
+          <ProfileLink href="/profile">View Profile</ProfileLink>
+          <LogoutButton type="submit" onClick={logoutUser}>
+            Logout
+          </LogoutButton>
+          <h2 style={{
+            float: 'left',
+            margin: '1em',
+            position: 'absolute',
+            top: '140px',
+            fontSize: '1.5em',
+            color: '#474747',
+            wordWrap: 'break-line',
+          }}
+          >
+          &nbsp;&nbsp;Hello&nbsp;
+            {username}
+            !
+            <br />
+            Go to your profile to add a post!
+          </h2>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <BackButton
+            type="submit"
+            onClick={() => {
+              setCat('')
+            }}
+          >
+            Back
+          </BackButton>
+          <SubTitle>
+            {cat}
+            &nbsp;Posts
+          </SubTitle>
+          <>
+            {posts.map(p => {
+              if (friends.includes(p.author)) {
+                return (
+                  <div key={p._id}>
+                    <Post post={p} add />
+                  </div>
+                )
+              }
+              return null
+            })}
+          </>
+        </div>
+      )
+    } if (cat !== '') {
+      return (
+        <div>
+          <Title>Social Media Site</Title>
+          <ProfileLink href="/profile">View Profile</ProfileLink>
+          <LogoutButton type="submit" onClick={logoutUser}>
+            Logout
+          </LogoutButton>
+          <h2 style={{
+            float: 'left',
+            margin: '1em',
+            position: 'absolute',
+            top: '140px',
+            fontSize: '1.5em',
+            color: '#474747',
+            wordWrap: 'break-line',
+          }}
+          >
+          &nbsp;&nbsp;Hello&nbsp;
+            {username}
+            !
+            <br />
+            Go to your profile to add a post!
+          </h2>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <BackButton
+            type="submit"
+            onClick={() => {
+              setCat('')
+            }}
+          >
+            Back
+          </BackButton>
+          <SubTitle>
+            {cat}
+            &nbsp;Posts
+          </SubTitle>
+          <>
+            {posts.map(p => {
+              if (p.type !== undefined && (p.type.toLowerCase() === cat.toLowerCase())) {
+                return (
+                  <div key={p._id}>
+                    <Post post={p} add />
+                  </div>
+                )
+              }
+              return null
+            })}
+          </>
+        </div>
+      )
+    }
     return (
       <div>
-        <Title>Ask Questions, Get Answers</Title>
+        <Title>Social Media Site</Title>
+        <ProfileLink href="/profile">View Profile</ProfileLink>
         <LogoutButton type="submit" onClick={logoutUser}>
           Logout
         </LogoutButton>
+        <h2 style={{
+          float: 'left',
+          margin: '1em',
+          position: 'absolute',
+          top: '140px',
+          fontSize: '1.5em',
+          color: '#474747',
+          wordWrap: 'break-line',
+        }}
+        >
+          &nbsp;&nbsp;Hello&nbsp;
+          {username}
+          !
+          <br />
+          Go to your profile to add a post!
+        </h2>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <SubTitle>
+          Select a category to see posts!
+        </SubTitle>
+        <>
+          {categories.map(c => (
+            <div key={c}>
+              <CButton
+                type="submit"
+                onClick={() => {
+                  setCat(c)
+                }}
+              >
+                {c}
+              </CButton>
+            </div>
+          ))}
+        </>
+      </div>
+    )
+  }
+  if (cat === 'All') {
+    return (
+      <div>
+        <Title>Social Media Site</Title>
+        <Link to="/login" style={loginLinkStyle}>Login</Link>
         <h2 style={{
           float: 'right',
           margin: '1em',
@@ -78,59 +303,173 @@ const Home = () => {
           right: '90px',
           fontSize: '1.5em',
           color: '#474747',
+          wordWrap: 'break-line',
         }}
         >
-          &nbsp;&nbsp;Hello&nbsp;
-          {username}
-          !
+          Login to go to your profile or add a post!
         </h2>
         <br />
         <br />
         <br />
-        <MButton style={{ background: '#c4ecff' }} type="submit" onClick={() => setModal(true)}>
-          Add new question +
-        </MButton>
-        <Modal style={modalStyle} show={modal} author={username} onClose={showModal} />
+        <br />
+        <br />
+        <BackButton
+          type="submit"
+          onClick={() => {
+            setCat('')
+          }}
+        >
+          Back
+        </BackButton>
+        <SubTitle>
+          {cat}
+          &nbsp;Posts
+        </SubTitle>
         <>
-          {questions.map(q => (
-            <div key={q._id}>
-              <br />
-              <QButton
-                style={{
-                  background: (q._id === shownID) ? '#c4ecff' : '#ebebeb',
-                }}
-                type="submit"
-                onClick={() => ((q._id === shownID) ? setShownID('') : setShownID(q._id))}
-              >
-                {q.questionText}
-              </QButton>
-              <Question question={q} shown={q._id === shownID} loggedIn={username !== null && username !== ''} />
+          {posts.map(p => (
+            <div key={p._id}>
+              <Post post={p} add={false} />
             </div>
           ))}
         </>
       </div>
     )
+  } if (cat === 'Friends') {
+    return (
+      <div>
+        <Title>Social Media Site</Title>
+        <Link to="/login" style={loginLinkStyle}>Login</Link>
+        <h2 style={{
+          float: 'right',
+          margin: '1em',
+          position: 'relative',
+          top: '-17px',
+          right: '90px',
+          fontSize: '1.5em',
+          color: '#474747',
+          wordWrap: 'break-line',
+        }}
+        >
+          Login to go to your profile or add a post!
+        </h2>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <BackButton
+          type="submit"
+          onClick={() => {
+            setCat('')
+          }}
+        >
+          Back
+        </BackButton>
+        <SubTitle>
+          {cat}
+          &nbsp;Posts
+        </SubTitle>
+        <>
+          {posts.map(p => {
+            if (friends.includes(p.author)) {
+              return (
+                <div key={p._id}>
+                  <Post post={p} add={false} />
+                </div>
+              )
+            }
+            return null
+          })}
+        </>
+      </div>
+    )
+  } if (cat !== '') {
+    return (
+      <div>
+        <Title>Social Media Site</Title>
+        <Link to="/login" style={loginLinkStyle}>Login</Link>
+        <h2 style={{
+          float: 'right',
+          margin: '1em',
+          position: 'relative',
+          top: '-17px',
+          right: '90px',
+          fontSize: '1.5em',
+          color: '#474747',
+          wordWrap: 'break-line',
+        }}
+        >
+          Login to go to your profile or add a post!
+        </h2>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <BackButton
+          type="submit"
+          onClick={() => {
+            setCat('')
+          }}
+        >
+          Back
+        </BackButton>
+        <SubTitle>
+          {cat}
+          &nbsp;Posts
+        </SubTitle>
+        <>
+          {posts.map(p => {
+            if (p.type !== undefined && (p.type.toLowerCase() === cat.toLowerCase())) {
+              return (
+                <div key={p._id}>
+                  <Post post={p} add={false} />
+                </div>
+              )
+            }
+            return null
+          })}
+        </>
+      </div>
+    )
   }
-  // if not logged in, cannot add a question yet
   return (
     <div>
-      <Title>Ask questions, get answers!</Title>
-      <Link to="/login" style={loginLinkStyle}>Login to submit or answer a question!</Link>
+      <Title>Social Media Site</Title>
+      <Link to="/login" style={loginLinkStyle}>Login</Link>
+      <h2 style={{
+        float: 'right',
+        margin: '1em',
+        position: 'relative',
+        top: '-17px',
+        right: '90px',
+        fontSize: '1.5em',
+        color: '#474747',
+        wordWrap: 'break-line',
+      }}
+      >
+        Login to go to your profile or add a post!
+      </h2>
       <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <SubTitle>
+        Select a category to see posts!
+      </SubTitle>
       <>
-        {questions.map(q => (
-          <div key={q._id}>
-            <br />
-            <QButton
-              style={{
-                background: (q._id === shownID) ? '#c4ecff' : '#ebebeb',
-              }}
+        {categories.map(c => (
+          <div key={c}>
+            <CButton
               type="submit"
-              onClick={() => ((q._id === shownID) ? setShownID('') : setShownID(q._id))}
+              onClick={() => {
+                setCat(c)
+              }}
             >
-              {q.questionText}
-            </QButton>
-            <Question question={q} shown={q._id === shownID} loggedIn={username !== null && username !== ''} />
+              {c}
+            </CButton>
           </div>
         ))}
       </>

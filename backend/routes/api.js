@@ -8,7 +8,7 @@ const isAuthenticated = require('../middlewares/isAuthenticated')
 
 // add post
 router.post('/posts/add', isAuthenticated, async (req, res, next) => {
-  const { postTitle, postText } = req.body
+  const { postTitle, postText, imageURL } = req.body
   const { username } = req.session
   const { type: typeDB } = await User.findOne({ username })
   try {
@@ -17,6 +17,7 @@ router.post('/posts/add', isAuthenticated, async (req, res, next) => {
       postText,
       author: username,
       type: typeDB,
+      imageURL,
     })
     await User.updateOne({ username }, { $addToSet: { posts: postTitle } })
     res.send('post created')
@@ -33,7 +34,7 @@ router.post('/posts/comment', isAuthenticated, async (req, res, next) => {
     res.send('empty comment! add some text')
   } else {
     try {
-      await Post.updateOne({ _id: id }, { $push: { comments: { author: username, comment } } })
+      await Post.updateOne({ _id: id.id }, { $push: { comments: { author: username, comment } } })
       res.send('post comments updated')
     } catch (err) {
       next(err)
@@ -52,6 +53,34 @@ router.get('/posts', async (req, res) => {
       const posts = await Post.find({ type })
       res.json(posts)
     }
+  } catch (err) {
+    res.send('getting posts has problems')
+  }
+})
+
+// get all posts from user's friends
+// router.post('/posts/friends', async (req, res) => {
+//   const { friends } = req.body
+//   try {
+//     const posts = await Post.find({ author: { $in: friends } })
+//     res.send(posts)
+//   } catch (err) {
+//     res.send('getting friend posts has problems')
+//   }
+// })
+
+// get types of posts
+router.get('/postTypes', async (req, res) => {
+  try {
+    const dict = await Post.find({}, { type: 1, _id: 0 })
+    const types = dict.map(({ type }) => type)
+    const uniqueTypes = [...new Set(types.filter(Boolean))]
+    const capital = uniqueTypes.map(e => e[0].toUpperCase() + e.substring(1))
+    const friends = 'Friends'
+    const second = [friends].concat(capital)
+    const all = 'All'
+    const final = [all].concat(second)
+    res.send(final)
   } catch (err) {
     res.send('getting posts has problems')
   }

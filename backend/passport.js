@@ -17,13 +17,13 @@ const auth = () => {
     callbackURL: 'http://localhost:3000/auth/google/callback',
   },
   async (accessToken, refreshToken, profile, cb) => {
-    const { email } = profile._json
+    const { email, sub } = profile._json
     const username = email
-    const password = 'google'
+    const password = sub
     try {
-      const user = await User.findOneAndUpdate({ username }, { $set: { password } }, { upsert: true })
+      await User.findOneAndUpdate({ username }, { $set: { password } }, { upsert: true })
     } catch (err) {
-      cb(err) // *********************************
+      cb(err) // ********************************* this works?
     }
     cb(null, profile)
   }))

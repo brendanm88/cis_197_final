@@ -24,7 +24,8 @@ const Signup = () => {
       try {
         const { data } = await axios.post('/account/signup', { username, password })
         if (data === 'user created') {
-          // reroute back to home page!
+          // log in and reroute back to home page!
+          await axios.post('/account/login', { username, password })
           navigate('/', { replace: true })
         } else {
           window.alert('user already exists!')

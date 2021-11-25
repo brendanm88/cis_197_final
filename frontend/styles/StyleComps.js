@@ -20,22 +20,22 @@ export const modalStyle = {
   padding: '1em',
   boxSizing: 'border-box',
   width: '40%',
-  height: '40%',
+  height: 'fit-content',
   zIndex: '9',
 }
-// wraps modal
-export const questionStyle = {
+export const postStyle = {
+  fontFamily: 'inherit',
   background: '#ebebeb',
   border: '2px solid #646464',
   borderRadius: '5px',
   boxShadow: '1px 2px 4px dimgray',
-  position: 'absolute',
-  top: '250px',
-  left: '45%',
   padding: '1em',
   boxSizing: 'border-box',
-  width: '40%',
+  width: '80vw',
   height: 'fit-content',
+  float: 'left',
+  margin: '1.66%',
+  // position: 'relative',
 }
 // input form formatting
 export const QuesInputWrap = s.textarea`
@@ -45,7 +45,8 @@ export const QuesInputWrap = s.textarea`
   border-radius: 5px;
   box-shadow: 1px 2px 3px pebble;
   position: relative;
-  height: 40%;
+  height: fit-content;
+  padding: 0.5em;
   width: 90%;
   word-wrap: break-word;
 `
@@ -56,13 +57,13 @@ export const AnsInputWrap = s.textarea`
   border: 2px solid pebble;
   border-radius: 5px;
   box-shadow: 1px 2px 3px pebble;
-  position: relative;
-  height: 100px;
-  width: 90%;
+  width: 60%;
   word-wrap: break-word;
 `
 // wraps buttons
 export const Button = s.button`
+  color: black;
+  font-family: inherit;
   font-size: 1em;
   margin: 0.5em;
   padding: 0.25em 1em;
@@ -72,17 +73,62 @@ export const Button = s.button`
 `
 // wraps login buttons
 export const LoginButton = s.button`
+  color: black;
+  font-family: inherit;
   font-size: 1em;
   margin: 0.5em;
   padding: 0.25em 1em;
-  border: 2px solid pebble;
+  border: 2px solid gray;
   border-radius: 3px;
   box-shadow: 1px 2px 4px dimgray;
   position: relative;
   right: -100px;
 `
+// wraps type buttons
+export const TypeButton = s.button`
+  color: black;
+  font-family: inherit;
+  font-size: 1em;
+  margin: 0.5em;
+  padding: 0.25em 1em;
+  border: 2px solid gray;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px dimgray;
+  position: relative;
+`
+// wraps google login buttons
+export const GoogleLink = s.a`
+  background: #efefef;
+  text-decoration: none;
+  color: black;
+  font-size: 1em;
+  margin: 0.5em;
+  padding: 0.25em 1em;
+  border: 2px solid gray;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px dimgray;
+  position: relative;
+  right: -100px;
+`
+// wraps profile link
+export const ProfileLink = s.a`
+  float: right;
+  background: #efefef;
+  text-decoration: none;
+  color: black;
+  font-size: 1em;
+  margin: 0.5em;
+  padding: 0.25em 1em;
+  border: 2px solid gray;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px dimgray;
+  position: relative;
+  right: 100px;
+`
 // wraps misc buttons
 export const BasicButton = s.button`
+  color: black;
+  font-family: inherit;
   font-size: 1em;
   margin: 0.5em;
   padding: 0.25em 1em;
@@ -96,9 +142,11 @@ export const BasicButton = s.button`
 export const LogoutButton = s.button`
   float: right;
   font-size: 1em;
+  font-family: inherit;
+  color: black;
   margin: 0.5em;
   padding: 0.25em 1em;
-  border: 2px solid pebble;
+  border: 2px solid gray;
   border-radius: 3px;
   box-shadow: 1px 2px 4px dimgray;
   position: relative;
@@ -107,13 +155,14 @@ export const LogoutButton = s.button`
 // wraps answer buttons
 export const AnswerButton = s.button`
   float: right;
+  color: black;
+  font-family: inherit;
   font-size: 1em;
   margin: 0.5em;
   padding: 0.25em 1em;
   border: 2px solid pebble;
   border-radius: 3px;
   box-shadow: 1px 2px 4px dimgray;
-  position: relative;
   right: 37%;
 `
 // wraps question buttons
@@ -135,21 +184,51 @@ export const QButton = s.button`
   height: fit-content;
   padding-right: 1em;
 `
+export const CButton = s.button`
+  font-size: 1.25em;
+  border: 2px solid pebble;
+  border-radius: 3px;
+  box-sizing: border-box;
+  text-align: center;
+  word-wrap: break-word;
+  font-family: inherit;
+  float: left;
+  width: 15vw;
+  height: 15vw;
+  margin: 1.66%;
+`
+export const BackButton = s.button`
+  font-size: 1.25em;
+  border: 2px solid pebble;
+  border-radius: 3px;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: inherit;
+  float: right;
+  width: 15vw;
+  height: 5vw;
+  margin: 1.66%;
+  position: relative;
+`
 // wraps model buttons
 export const MButton = s.button`
+  font-family: inherit;
+  color: black;
   font-size: 1.25em;
   margin: 0.5em;
   border: 2px solid pebble;
   border-radius: 3px;
   position: relative;
-  left: 48px;
   box-sizing: border-box;
-  width: 25%;
+  left: 29px;
+  width: 29%;
   height: 60px;
   text-align: center;
 `
 // title formatting
 export const Title = s.h1`
+  border: 2px solid gray;
+  border-radius: 3px;
   margin: 0.5em;
   color: #474747;
   font-size: 3.5em;
@@ -157,6 +236,27 @@ export const Title = s.h1`
   font-family: 'Monaco';
   text-align: center;
   box-shadow: 1px 3px 5px dimgray;
+`
+// title formatting
+export const SubTitle = s.h1`
+  border: 2px solid gray;
+  border-radius: 3px;
+  margin: 0.5em;
+  color: #474747;
+  font-size: 1.75em;
+  font-weight: 330;
+  font-family: 'Monaco';
+  text-align: center;
+  box-shadow: 1px 3px 5px dimgray;
+  width: fit-content;
+  height: fit-content;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  padding-left: 2em;
+  padding-right: 2em;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
 
 // input form formatting
@@ -188,4 +288,6 @@ export const loginLinkStyle = {
   borderRadius: '5px',
   position: 'relative',
   float: 'right',
+  right: '70px',
+  top: '-8px',
 }

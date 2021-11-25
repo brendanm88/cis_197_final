@@ -8,16 +8,10 @@ import {
 import Login from '../components/Login'
 import Signup from '../components/Signup'
 import Home from '../components/Home'
+import Profile from '../components/Profile'
 import {
   GlobalStyle,
 } from '../styles/StyleComps'
-
-// const [data, setData] = useState([])
-
-// useEffect(async () => {
-//   const { data: users } = await axios.get('/account/all') // GET request
-//   setData(users)
-// }, [])
 
 // routes for home page, login, and signup
 const App = () => (
@@ -29,6 +23,7 @@ const App = () => (
           <Route exact path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </>
     </Router>

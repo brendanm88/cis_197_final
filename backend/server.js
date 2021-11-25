@@ -3,12 +3,11 @@ const mongoose = require('mongoose')
 const session = require('cookie-session')
 const path = require('path')
 const passport = require('passport')
+const cors = require('cors')
 
 const AccountRouter = require('./routes/account')
 const ApiRouter = require('./routes/api')
-// const AuthRouter = require('./routes/auth')
 const isAuthenticated = require('./middlewares/isAuthenticated')
-const User = require('./models/user')
 
 require('./passport')(passport)
 
@@ -34,6 +33,8 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+
+// app.use(cors({ origin: true }))
 
 app.get('/', (req, res) => {
   // just use req.session and get email for new user
@@ -65,7 +66,6 @@ app.post('/', (req, res) => {
 // routers
 app.use('/account', AccountRouter)
 app.use('/api', ApiRouter)
-// app.use('/auth', AuthRouter)
 
 // set favicon
 app.get('/favicon.ico', (req, res) => {
@@ -73,9 +73,9 @@ app.get('/favicon.ico', (req, res) => {
 })
 
 // // set the initial entry point
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../dist/index.html'))
-// })
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
+})
 
 // error handling default/middleware
 app.use(isAuthenticated, (err, req, res, next) => {

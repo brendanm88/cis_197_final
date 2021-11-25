@@ -9,6 +9,7 @@ import {
   LoginButton,
   InputWrap,
   linkStyle,
+  GoogleLink,
 } from '../styles/StyleComps'
 
 const Login = () => {
@@ -51,6 +52,10 @@ const Login = () => {
       <LoginButton type="submit" onClick={loginUser}>
         Login
       </LoginButton>
+      <GoogleLink href="http://localhost:3000/auth/google">Login with Google!</GoogleLink>
+      {/* <GoogleButton type="submit" onClick={() => googleLogin()}>
+        Login with Google
+      </GoogleButton> */}
       <p>
         Don&apos;t have an account?
         <Link to="/signup" style={linkStyle}>Signup</Link>
