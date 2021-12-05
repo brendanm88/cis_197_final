@@ -15,10 +15,31 @@ router.post('/isLoggedIn', isAuthenticated, (req, res) => {
 
 // create user
 router.post('/signup', async (req, res, next) => {
-  const { username, password } = req.body
-  // case for if username already exists throw error? *********************************
+  const {
+    username, password,
+  } = req.body
+  let image = ''
+  let type = ''
+  let desc = ''
+  if (!req.body.type) {
+    type = 'studying'
+  } else {
+    type = req.body.type
+  }
+  if (!req.body.image) {
+    image = 'https://archives.upenn.edu/wp-content/uploads/2018/05/franklin-statue-chestnut-and-9th.jpg'
+  } else {
+    image = req.body.image
+  }
+  if (!req.body.desc) {
+    desc = 'I like studying!'
+  } else {
+    desc = req.body.desc
+  }
   try {
-    await User.create({ username, password })
+    await User.create({
+      username, password, type, desc, image,
+    })
     res.send('user created')
   } catch (err) {
     next(err)
@@ -133,14 +154,48 @@ router.post('/type', isAuthenticated, async (req, res, next) => {
 router.post('/friend', isAuthenticated, async (req, res, next) => {
   const { friendUser } = req.body
   const { username } = req.session
+  if (friendUser === username) {
+    res.send('cannot follow yourself')
+  }
   try {
     const friend = await User.findOne({ username: friendUser })
-    if (!friend) {
+    const curr = await User.findOne({ username })
+    if (curr.friends.includes(friendUser)) {
+      res.send('already following user')
+    } else if (!friend) {
       res.send('friend does not exist')
     } else {
       try {
         await User.updateOne({ username }, { $addToSet: { friends: friendUser } })
         res.send('friend added successfully')
+      } catch (err) {
+        next(err)
+      }
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+// remove friend from user
+router.post('/removeFriend', isAuthenticated, async (req, res, next) => {
+  const { friendUser } = req.body
+  const { username } = req.session
+  if (friendUser === username) {
+    res.send('cannot unfollow yourself')
+  }
+  try {
+    const friend = await User.findOne({ username: friendUser })
+    const curr = await User.findOne({ username })
+    console.log(friendUser)
+    if (!curr.friends.includes(friendUser)) {
+      res.send('not following user to remove')
+    } else if (!friend) {
+      res.send('friend does not exist')
+    } else {
+      try {
+        await User.updateOne({ username }, { $pull: { friends: friendUser } })
+        res.send('friend removed successfully')
       } catch (err) {
         next(err)
       }

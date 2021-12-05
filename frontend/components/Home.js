@@ -83,7 +83,7 @@ const Home = () => {
     if (cat === 'All') {
       return (
         <div>
-          <Title>Social Media Site</Title>
+          <Title>Penn-Gram</Title>
           <ProfileLink href="/profile">View Profile</ProfileLink>
           <LogoutButton type="submit" onClick={logoutUser}>
             Logout
@@ -124,16 +124,16 @@ const Home = () => {
           <>
             {posts.map(p => (
               <div key={p._id}>
-                <Post post={p} add />
+                <Post post={p} add deletable={username === p.author} />
               </div>
             ))}
           </>
         </div>
       )
-    } if (cat === 'Friends') {
+    } if (cat === 'Following') {
       return (
         <div>
-          <Title>Social Media Site</Title>
+          <Title>Penn-Gram</Title>
           <ProfileLink href="/profile">View Profile</ProfileLink>
           <LogoutButton type="submit" onClick={logoutUser}>
             Logout
@@ -168,15 +168,16 @@ const Home = () => {
             Back
           </BackButton>
           <SubTitle>
-            {cat}
-            &nbsp;Posts
+            {/* {cat}
+            &nbsp;Posts */}
+            Posts from users you&apos;re following:
           </SubTitle>
           <>
             {posts.map(p => {
               if (friends.includes(p.author)) {
                 return (
                   <div key={p._id}>
-                    <Post post={p} add />
+                    <Post post={p} add deletable={username === p.author} />
                   </div>
                 )
               }
@@ -188,7 +189,7 @@ const Home = () => {
     } if (cat !== '') {
       return (
         <div>
-          <Title>Social Media Site</Title>
+          <Title>Penn-Gram</Title>
           <ProfileLink href="/profile">View Profile</ProfileLink>
           <LogoutButton type="submit" onClick={logoutUser}>
             Logout
@@ -231,7 +232,7 @@ const Home = () => {
               if (p.type !== undefined && (p.type.toLowerCase() === cat.toLowerCase())) {
                 return (
                   <div key={p._id}>
-                    <Post post={p} add />
+                    <Post post={p} add deletable={username === p.author} />
                   </div>
                 )
               }
@@ -243,7 +244,7 @@ const Home = () => {
     }
     return (
       <div>
-        <Title>Social Media Site</Title>
+        <Title>Penn-Gram</Title>
         <ProfileLink href="/profile">View Profile</ProfileLink>
         <LogoutButton type="submit" onClick={logoutUser}>
           Logout
@@ -293,7 +294,7 @@ const Home = () => {
   if (cat === 'All') {
     return (
       <div>
-        <Title>Social Media Site</Title>
+        <Title>Penn-Gram</Title>
         <Link to="/login" style={loginLinkStyle}>Login</Link>
         <h2 style={{
           float: 'right',
@@ -306,7 +307,7 @@ const Home = () => {
           wordWrap: 'break-line',
         }}
         >
-          Login to go to your profile or add a post!
+          Login to comment, go to your profile, or add a post!
         </h2>
         <br />
         <br />
@@ -328,65 +329,16 @@ const Home = () => {
         <>
           {posts.map(p => (
             <div key={p._id}>
-              <Post post={p} add={false} />
+              <Post post={p} add={false} deletable={false} />
             </div>
           ))}
-        </>
-      </div>
-    )
-  } if (cat === 'Friends') {
-    return (
-      <div>
-        <Title>Social Media Site</Title>
-        <Link to="/login" style={loginLinkStyle}>Login</Link>
-        <h2 style={{
-          float: 'right',
-          margin: '1em',
-          position: 'relative',
-          top: '-17px',
-          right: '90px',
-          fontSize: '1.5em',
-          color: '#474747',
-          wordWrap: 'break-line',
-        }}
-        >
-          Login to go to your profile or add a post!
-        </h2>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <BackButton
-          type="submit"
-          onClick={() => {
-            setCat('')
-          }}
-        >
-          Back
-        </BackButton>
-        <SubTitle>
-          {cat}
-          &nbsp;Posts
-        </SubTitle>
-        <>
-          {posts.map(p => {
-            if (friends.includes(p.author)) {
-              return (
-                <div key={p._id}>
-                  <Post post={p} add={false} />
-                </div>
-              )
-            }
-            return null
-          })}
         </>
       </div>
     )
   } if (cat !== '') {
     return (
       <div>
-        <Title>Social Media Site</Title>
+        <Title>Penn-Gram</Title>
         <Link to="/login" style={loginLinkStyle}>Login</Link>
         <h2 style={{
           float: 'right',
@@ -399,7 +351,7 @@ const Home = () => {
           wordWrap: 'break-line',
         }}
         >
-          Login to go to your profile or add a post!
+          Login to comment, go to your profile, or add a post!
         </h2>
         <br />
         <br />
@@ -423,7 +375,7 @@ const Home = () => {
             if (p.type !== undefined && (p.type.toLowerCase() === cat.toLowerCase())) {
               return (
                 <div key={p._id}>
-                  <Post post={p} add={false} />
+                  <Post post={p} add={false} deletable={false} />
                 </div>
               )
             }
@@ -435,7 +387,7 @@ const Home = () => {
   }
   return (
     <div>
-      <Title>Social Media Site</Title>
+      <Title>Penn-Gram</Title>
       <Link to="/login" style={loginLinkStyle}>Login</Link>
       <h2 style={{
         float: 'right',
@@ -448,7 +400,7 @@ const Home = () => {
         wordWrap: 'break-line',
       }}
       >
-        Login to go to your profile or add a post!
+        Login to comment, go to your profile, or add a post!
       </h2>
       <br />
       <br />
@@ -460,18 +412,23 @@ const Home = () => {
         Select a category to see posts!
       </SubTitle>
       <>
-        {categories.map(c => (
-          <div key={c}>
-            <CButton
-              type="submit"
-              onClick={() => {
-                setCat(c)
-              }}
-            >
-              {c}
-            </CButton>
-          </div>
-        ))}
+        {categories.map(c => {
+          if (c === 'Following') {
+            return null
+          }
+          return (
+            <div key={c}>
+              <CButton
+                type="submit"
+                onClick={() => {
+                  setCat(c)
+                }}
+              >
+                {c}
+              </CButton>
+            </div>
+          )
+        })}
       </>
     </div>
   )

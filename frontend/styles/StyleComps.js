@@ -14,27 +14,28 @@ export const modalStyle = {
   border: '2px solid #646464',
   borderRadius: '5px',
   boxShadow: '1px 2px 4px dimgray',
-  position: 'absolute',
-  top: '200px',
+  position: 'relative',
+  // top: '200px',
   left: '25%',
   padding: '1em',
   boxSizing: 'border-box',
-  width: '40%',
+  width: '60%',
   height: 'fit-content',
   zIndex: '9',
 }
 export const postStyle = {
   fontFamily: 'inherit',
-  background: '#ebebeb',
+  background: '#c1dcff',
   border: '2px solid #646464',
   borderRadius: '5px',
   boxShadow: '1px 2px 4px dimgray',
   padding: '1em',
-  boxSizing: 'border-box',
+  // boxSizing: 'border-box',
   width: '80vw',
-  height: 'fit-content',
-  float: 'left',
+  // height: 'fit-content',
+  // float: 'left',
   margin: '1.66%',
+  marginBottom: '3em',
   // position: 'relative',
 }
 // input form formatting
@@ -151,6 +152,7 @@ export const LogoutButton = s.button`
   box-shadow: 1px 2px 4px dimgray;
   position: relative;
   right: 100px;
+  z-index: 9;
 `
 // wraps answer buttons
 export const AnswerButton = s.button`
@@ -164,6 +166,20 @@ export const AnswerButton = s.button`
   border-radius: 3px;
   box-shadow: 1px 2px 4px dimgray;
   right: 37%;
+`
+// wraps delete buttons
+export const DeleteButton = s.button`
+  float: right;
+  color: black;
+  font-family: inherit;
+  font-size: 1em;
+  margin: 0.5em;
+  padding: 0.25em 1em;
+  border: 2px solid pebble;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px dimgray;
+  position: relative;
+  z-index: 9;
 `
 // wraps question buttons
 export const QButton = s.button`
@@ -185,6 +201,7 @@ export const QButton = s.button`
   padding-right: 1em;
 `
 export const CButton = s.button`
+  background: #c1dcff;
   font-size: 1.25em;
   border: 2px solid pebble;
   border-radius: 3px;
@@ -208,6 +225,7 @@ export const BackButton = s.button`
   width: 15vw;
   height: 5vw;
   margin: 1.66%;
+  margin-top: 2.5em;
   position: relative;
 `
 // wraps model buttons
@@ -257,6 +275,30 @@ export const SubTitle = s.h1`
   position: relative;
   left: 50%;
   transform: translate(-50%, -50%);
+`
+
+// title formatting
+export const SmallTitle = s.h3`
+  background: #c1dcff;
+  border: 2px solid gray;
+  border-radius: 3px;
+  margin: 1.5em;
+  color: black;
+  font-size: 1em;
+  font-weight: 200;
+  font-family: 'Monaco';
+  word-wrap: break-word;
+  text-align: center;
+  box-shadow: 1px 3px 5px dimgray;
+  width: 60vw;
+  height: fit-content;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  padding-left: 2em;
+  padding-right: 2em;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, -10%);
 `
 
 // input form formatting

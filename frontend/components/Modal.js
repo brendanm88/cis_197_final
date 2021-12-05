@@ -40,14 +40,17 @@ const Modal = ({
   // display if showing
   return (
     <div style={style}>
-      <h3>Make a new post!</h3>
-      Title:
+      <h3>Make a new post! (fields with a * are required)</h3>
+      Title*:
+      <br />
       <QuesInputWrap onChange={e => setTitle(e.target.value)} />
       <br />
-      Post text:
+      Post text*:
+      <br />
       <QuesInputWrap onChange={e => setContent(e.target.value)} />
       <br />
       Image URL:
+      <br />
       <QuesInputWrap onChange={e => setImage(e.target.value)} />
       <br />
       <BasicButton

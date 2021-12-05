@@ -58,16 +58,16 @@ router.get('/posts', async (req, res) => {
   }
 })
 
-// get all posts from user's friends
-// router.post('/posts/friends', async (req, res) => {
-//   const { friends } = req.body
-//   try {
-//     const posts = await Post.find({ author: { $in: friends } })
-//     res.send(posts)
-//   } catch (err) {
-//     res.send('getting friend posts has problems')
-//   }
-// })
+// delete a post
+router.post('/posts/delete', async (req, res) => {
+  const { id } = req.body
+  try {
+    await Post.deleteOne({ _id: id.id })
+    res.send('post deleted')
+  } catch (err) {
+    res.send('deleting post has problems')
+  }
+})
 
 // get types of posts
 router.get('/postTypes', async (req, res) => {
@@ -76,8 +76,8 @@ router.get('/postTypes', async (req, res) => {
     const types = dict.map(({ type }) => type)
     const uniqueTypes = [...new Set(types.filter(Boolean))]
     const capital = uniqueTypes.map(e => e[0].toUpperCase() + e.substring(1))
-    const friends = 'Friends'
-    const second = [friends].concat(capital)
+    const following = 'Following'
+    const second = [following].concat(capital)
     const all = 'All'
     const final = [all].concat(second)
     res.send(final)

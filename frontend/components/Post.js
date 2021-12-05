@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { AnswerButton, postStyle, AnsInputWrap } from '../styles/StyleComps'
+import {
+  AnswerButton,
+  postStyle,
+  AnsInputWrap,
+  DeleteButton,
+} from '../styles/StyleComps'
 
 const Post = ({
   post,
   add,
-  // shown,
-  // loggedIn,
+  deletable,
 }) => {
   const [content, setContent] = useState('')
   const {
     _id,
     author,
-    type,
     postText,
     postTitle,
     imageURL,
@@ -35,7 +38,112 @@ const Post = ({
       }
     }
   }
+
+  // post request for answering question
+  const deletePost = async id => {
+    try {
+      const { data } = await axios.post('/api/posts/delete', { id })
+      if (data === 'post deleted') {
+        // continue
+      }
+    } catch (err) {
+      // throw alert!
+      window.alert('deleting the post has problems')
+    }
+  }
+
+  // if able to add reply
   if (add) {
+    if (deletable) {
+      // if we have an image
+      if (imageURL && imageURL !== '') {
+        return (
+          <div style={postStyle}>
+            <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+              {postTitle}
+            </h2>
+            <img
+              src={imageURL}
+              alt=""
+              onError={e => {
+                e.target.style.display = null
+              }}
+              style={{
+                maxWidth: '70vw',
+                maxHeight: '70vw',
+                width: 'auto',
+                height: 'auto',
+                border: '2px solid darkgrey',
+                borderRadius: '2px',
+              }}
+            />
+            <p style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+              {postText}
+            &nbsp;-
+              {author}
+            </p>
+            <h3>
+              Comments:
+            </h3>
+            <p style={{ height: 'fit-content', wordWrap: 'break-word' }}>
+              {comments.map(c => (
+                <li key={c._id}>
+                  {c.comment}
+              &nbsp;-
+                  {c.author}
+                </li>
+              ))}
+            </p>
+            <h4>
+              Add a comment:
+            </h4>
+            <AnsInputWrap onChange={e => setContent(e.target.value)} />
+            <AnswerButton type="submit" onClick={() => addReply({ id: _id })}>
+              Submit Comment
+            </AnswerButton>
+            <DeleteButton type="submit" onClick={() => deletePost({ id: _id })}>
+              Delete Post
+            </DeleteButton>
+          </div>
+        )
+      }
+      // else no image but can still reply
+      return (
+        <div style={postStyle}>
+          <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+            {postTitle}
+          </h2>
+          <p style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+            {postText}
+          &nbsp;-
+            {author}
+          </p>
+          <h3>
+            Comments:
+          </h3>
+          <p style={{ height: 'fit-content', wordWrap: 'break-word' }}>
+            {comments.map(c => (
+              <li key={c._id}>
+                {c.comment}
+              &nbsp;-
+                {c.author}
+              </li>
+            ))}
+          </p>
+          <h4>
+            Add a comment:
+          </h4>
+          <AnsInputWrap onChange={e => setContent(e.target.value)} />
+          <AnswerButton type="submit" onClick={() => addReply({ id: _id })}>
+            Submit Comment
+          </AnswerButton>
+          <DeleteButton type="submit" onClick={() => deletePost({ id: _id })}>
+            Delete Post
+          </DeleteButton>
+        </div>
+      )
+    }
+    // not deletable
     if (imageURL && imageURL !== '') {
       return (
         <div style={postStyle}>
@@ -44,7 +152,7 @@ const Post = ({
           </h2>
           <img
             src={imageURL}
-            alt=" "
+            alt=""
             onError={e => {
               e.target.style.display = null
             }}
@@ -84,6 +192,7 @@ const Post = ({
         </div>
       )
     }
+    // else no image but can still reply
     return (
       <div style={postStyle}>
         <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
@@ -116,7 +225,53 @@ const Post = ({
       </div>
     )
   }
+
+  // if image but no replying
   if (imageURL && imageURL !== '') {
+    if (deletable) {
+      return (
+        <div style={postStyle}>
+          <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+            {postTitle}
+          </h2>
+          <img
+            src={imageURL}
+            alt=""
+            onError={e => {
+              e.target.style.display = null
+            }}
+            style={{
+              maxWidth: '70vw',
+              maxHeight: '70vw',
+              width: 'auto',
+              height: 'auto',
+              border: '2px solid darkgrey',
+              borderRadius: '2px',
+            }}
+          />
+          <p style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+            {postText}
+            &nbsp;-
+            {author}
+          </p>
+          <h3>
+            Comments:
+          </h3>
+          <p style={{ height: 'fit-content', wordWrap: 'break-word' }}>
+            {comments.map(c => (
+              <li key={c._id}>
+                {c.comment}
+              &nbsp;-
+                {c.author}
+              </li>
+            ))}
+          </p>
+          <DeleteButton type="submit" onClick={() => deletePost({ id: _id })}>
+            Delete Post
+          </DeleteButton>
+        </div>
+      )
+    }
     return (
       <div style={postStyle}>
         <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
@@ -124,7 +279,7 @@ const Post = ({
         </h2>
         <img
           src={imageURL}
-          alt=" "
+          alt=""
           onError={e => {
             e.target.style.display = null
           }}
@@ -157,6 +312,36 @@ const Post = ({
       </div>
     )
   }
+  // else no image and no replying
+  if (deletable) {
+    return (
+      <div style={postStyle}>
+        <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+          {postTitle}
+        </h2>
+        <p style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
+          {postText}
+          &nbsp;-
+          {author}
+        </p>
+        <h3>
+          Comments:
+        </h3>
+        <p style={{ height: 'fit-content', wordWrap: 'break-word' }}>
+          {comments.map(c => (
+            <li key={c._id}>
+              {c.comment}
+              &nbsp;-
+              {c.author}
+            </li>
+          ))}
+        </p>
+        <DeleteButton type="submit" onClick={() => deletePost({ id: _id })}>
+          Delete Post
+        </DeleteButton>
+      </div>
+    )
+  }
   return (
     <div style={postStyle}>
       <h2 style={{ height: 'fit-content', wordWrap: 'break-word', textAlign: 'center' }}>
@@ -181,59 +366,6 @@ const Post = ({
       </p>
     </div>
   )
-
-  // only show question if clicked, if logged in show answer option
-  // if (shown) {
-  //   if (loggedIn) {
-  //     return (
-  //       <div style={postStyle}>
-  //         <h2 style={{ height: 'fit-content', 'word-wrap': 'break-word', 'text-align': 'center' }}>
-  //           {questionText}
-  //         </h2>
-  //         <h3>
-  //           Author:
-  //         </h3>
-  //         <p style={{ height: 'fit-content', 'word-wrap': 'break-word' }}>
-  //           {author}
-  //         </p>
-  //         <h3>
-  //           Answer:
-  //         </h3>
-  //         <p style={{ height: 'fit-content', 'word-wrap': 'break-word' }}>
-  //           {answer}
-  //         </p>
-  //         <h3>
-  //           Answer this question:
-  //         </h3>
-  //         <AnsInputWrap onChange={e => setContent(e.target.value)} />
-  //         <br />
-  //         <AnswerButton type="submit" onClick={() => addAnswer(_id)}>
-  //           Submit answer
-  //         </AnswerButton>
-  //       </div>
-  //     )
-  //   }
-  //   return (
-  //     <div style={postStyle}>
-  //       <h2 style={{ height: 'fit-content', 'word-wrap': 'break-word', 'text-align': 'center' }}>
-  //         {questionText}
-  //       </h2>
-  //       <h3>
-  //         Author:
-  //       </h3>
-  //       <p style={{ height: 'fit-content', 'word-wrap': 'break-word' }}>
-  //         {author}
-  //       </p>
-  //       <h3>
-  //         Answer:
-  //       </h3>
-  //       <p style={{ height: 'fit-content', 'word-wrap': 'break-word' }}>
-  //         {answer}
-  //       </p>
-  //     </div>
-  //   )
-  // }
-  // return null
 }
 
 export default Post
